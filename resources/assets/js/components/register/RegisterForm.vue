@@ -63,7 +63,8 @@
                 }
                 axios.post('/api/register', formData).then(response => {
                     console.log("response.data---", response.data);
-                }).catch(error=>{
+                    this.$router.push({name: 'confirm'});
+                }).catch(error => {
                     console.log("error---", error);
                 })
             }
