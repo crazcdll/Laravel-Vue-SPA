@@ -11,10 +11,10 @@ window.Vue = require('vue');
 import VueRouter from 'vue-router'
 import router from './routes'
 import App from './components/App'
-// import VeeValidate from 'vee-validate'
+import VeeValidate from 'vee-validate'
 
 Vue.use(VueRouter)
-// Vue.use(VeeValidate)
+Vue.use(VeeValidate)
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
