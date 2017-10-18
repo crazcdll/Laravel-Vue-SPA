@@ -11,10 +11,17 @@ window.Vue = require('vue');
 import VueRouter from 'vue-router'
 import router from './routes'
 import App from './components/App'
-import VeeValidate from 'vee-validate'
+
+// import zh_CN from 'vee-validate/dist/locale/zh_CN';
+import zh_CN from './locale/zh_CN';
+import VeeValidate, { Validator } from 'vee-validate';
+
+Validator.localize('zh_CN', zh_CN);
 
 Vue.use(VueRouter)
-Vue.use(VeeValidate)
+Vue.use(VeeValidate, {
+  locale: 'zh_CN'
+});
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
