@@ -45433,6 +45433,7 @@ module.exports = function spread(callback) {
 
 var routes = [{
   path: '/',
+  name: 'index',
   component: __webpack_require__(43),
   meta: {}
 }, {
@@ -45448,12 +45449,12 @@ var routes = [{
   path: '/register',
   name: 'register',
   component: __webpack_require__(55),
-  meta: {}
+  meta: { requireGuest: true }
 }, {
   path: '/login',
   name: 'login',
   component: __webpack_require__(61),
-  meta: {}
+  meta: { requireGuest: true }
 }, {
   path: '/confirm',
   name: 'confirm',
@@ -45477,6 +45478,13 @@ router.beforeEach(function (to, from, next) {
       return next();
     } else {
       return next({ 'name': 'login' });
+    }
+  }
+  if (to.meta.requireGuest) {
+    if (__WEBPACK_IMPORTED_MODULE_1__store_index__["a" /* default */].state.authenticated || __WEBPACK_IMPORTED_MODULE_2__helpers_jwt__["a" /* default */].getToken()) {
+      return next({ 'name': 'index' });
+    } else {
+      return next();
     }
   }
   next();
@@ -46123,16 +46131,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     register: function register() {
       var _this = this;
 
-      var formData = {
-        name: this.name,
-        email: this.email,
-        password: this.password
-      };
-      axios.post('/api/register', formData).then(function (response) {
-        console.log("response.data---", response.data);
-        _this.$router.push({ name: 'confirm' });
-      }).catch(function (error) {
-        console.log("error---", error);
+      this.$validator.validateAll().then(function (result) {
+        if (result) {
+          var formData = {
+            name: _this.name,
+            email: _this.email,
+            password: _this.password
+          };
+          axios.post('/api/register', formData).then(function (response) {
+            console.log("response.data---", response.data);
+            _this.$router.push({ name: 'confirm' });
+          }).catch(function (error) {
+            console.log("error---", error);
+          });
+        }
       });
     }
   }
@@ -46553,12 +46565,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     login: function login() {
       var _this = this;
 
-      var formData = {
-        email: this.email,
-        password: this.password
-      };
-      this.$store.dispatch('loginRequest', formData).then(function () {
-        _this.$router.push({ name: 'profile' });
+      this.$validator.validateAll().then(function (result) {
+        if (result) {
+          var formData = {
+            email: _this.email,
+            password: _this.password
+          };
+          _this.$store.dispatch('loginRequest', formData).then(function () {
+            _this.$router.push({ name: 'profile' });
+          });
+        }
       });
     }
   }
@@ -46964,6 +46980,7 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_TopMenu__ = __webpack_require__(75);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_TopMenu___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__common_TopMenu__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_jwt__ = __webpack_require__(13);
 //
 //
 //
@@ -46973,13 +46990,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    components: {
-        TopMenu: __WEBPACK_IMPORTED_MODULE_0__common_TopMenu___default.a
+  created: function created() {
+    if (__WEBPACK_IMPORTED_MODULE_1__helpers_jwt__["a" /* default */].getToken()) {
+      this.$store.dispatch('setAuthUser');
     }
+  },
+
+  components: {
+    TopMenu: __WEBPACK_IMPORTED_MODULE_0__common_TopMenu___default.a
+  }
 });
 
 /***/ }),

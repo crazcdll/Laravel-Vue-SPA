@@ -76,16 +76,20 @@
     },
     methods: {
       register() {
-        let formData = {
-          name: this.name,
-          email: this.email,
-          password: this.password
-        }
-        axios.post('/api/register', formData).then(response => {
-          console.log("response.data---", response.data);
-          this.$router.push({name: 'confirm'});
-        }).catch(error => {
-          console.log("error---", error);
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            let formData = {
+              name: this.name,
+              email: this.email,
+              password: this.password
+            }
+            axios.post('/api/register', formData).then(response => {
+              console.log("response.data---", response.data);
+              this.$router.push({name: 'confirm'});
+            }).catch(error => {
+              console.log("error---", error);
+            })
+          }
         })
       }
     }
