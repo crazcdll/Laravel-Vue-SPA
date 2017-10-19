@@ -10,13 +10,27 @@ window.Vue = require('vue');
 
 import VueRouter from 'vue-router'
 import router from './routes'
+import store from './store/index'
+import jwtToken from './helpers/jwt'
 import App from './components/App'
 
 // import zh_CN from 'vee-validate/dist/locale/zh_CN';
 import zh_CN from './locale/zh_CN';
-import VeeValidate, { Validator } from 'vee-validate';
+import VeeValidate, {Validator} from 'vee-validate';
 
 Validator.localize('zh_CN', zh_CN);
+
+// Add a request interceptor
+axios.interceptors.request.use(function (config) {
+  // Do something before request is sent
+  if (jwtToken.getToken()) {
+    config.headers['Authorization'] = 'Bearer ' + jwtToken.getToken();
+  }
+  return config;
+}, function (error) {
+  // Do something with request error
+  return Promise.reject(error);
+});
 
 Vue.use(VueRouter)
 Vue.use(VeeValidate, {
@@ -31,6 +45,7 @@ Vue.use(VeeValidate, {
 Vue.component('app', App);
 
 new Vue({
-    el: '#app',
-    router
+  el: '#app',
+  router,
+  store,
 });

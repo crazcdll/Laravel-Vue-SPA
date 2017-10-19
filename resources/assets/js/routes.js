@@ -1,32 +1,58 @@
 import VueRouter from 'vue-router'
+import Store from './store/index'
+import jwtToken from './helpers/jwt'
 
 let routes = [
-    {
-        path: '/',
-        component: require('./components/pages/Home')
-    },{
-        path: '/about',
-        component: require('./components/pages/About')
-    },{
-        path: '/posts/:id',
-        name: 'posts',
-        component: require('./components/posts/Post')
-    },{
-        path: '/register',
-        name: 'register',
-        component: require('./components/register/Register')
-  },{
+  {
+    path: '/',
+    component: require('./components/pages/Home'),
+    meta: {}
+  }, {
+    path: '/about',
+    component: require('./components/pages/About'),
+    meta: {}
+  }, {
+    path: '/posts/:id',
+    name: 'posts',
+    component: require('./components/posts/Post'),
+    meta: {}
+  }, {
+    path: '/register',
+    name: 'register',
+    component: require('./components/register/Register'),
+    meta: {}
+  }, {
     path: '/login',
     name: 'login',
-    component: require('./components/login/Login')
-    },{
-        path: '/confirm',
-        name: 'confirm',
-        component: require('./components/confirm/Email')
-    }
+    component: require('./components/login/Login'),
+    meta: {}
+  }, {
+    path: '/confirm',
+    name: 'confirm',
+    component: require('./components/confirm/Email'),
+    meta: {}
+  }, {
+    path: '/profile',
+    name: 'profile',
+    component: require('./components/user/Profile'),
+    meta: {requireAuth: true}
+  }
 ]
 
-export default new VueRouter({
-    mode: 'history',
-    routes
+const router = new VueRouter({
+  mode: 'history',
+  routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth) {
+    if (Store.state.authenticated || jwtToken.getToken()) {
+      return next();
+    } else {
+      return next({'name': 'login'});
+    }
+  }
+  next()
+})
+
+export default router

@@ -7,10 +7,16 @@
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <router-link to="/login">登录</router-link>
+            <router-link to="/login" v-if="!user.authenticated">登录</router-link>
           </li>
           <li>
-            <router-link to="/register">注册</router-link>
+            <router-link to="/register" v-if="!user.authenticated">注册</router-link>
+          </li>
+          <li>
+            <router-link to="/profile" v-if="user.authenticated">个人中心</router-link>
+          </li>
+          <li>
+            <router-link to="/profile" v-if="user.authenticated">退出</router-link>
           </li>
         </ul>
       </div>
@@ -20,5 +26,13 @@
 </template>
 
 <script>
-  export default {}
+  import {mapState} from 'vuex'
+
+  export default {
+    computed: {
+      ...mapState({
+        user: state => state.AuthUser
+      })
+    }
+  }
 </script>
