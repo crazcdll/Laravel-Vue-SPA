@@ -14502,7 +14502,7 @@ window.Vue = __webpack_require__(10);
 
 
 
-__WEBPACK_IMPORTED_MODULE_6_vee_validate__["a" /* Validator */].localize('zh_CN', __WEBPACK_IMPORTED_MODULE_5__locale_zh_CN__["a" /* default */]);
+__WEBPACK_IMPORTED_MODULE_6_vee_validate__["b" /* Validator */].localize('zh_CN', __WEBPACK_IMPORTED_MODULE_5__locale_zh_CN__["a" /* default */]);
 
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
@@ -14517,7 +14517,7 @@ axios.interceptors.request.use(function (config) {
 });
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]);
-Vue.use(__WEBPACK_IMPORTED_MODULE_6_vee_validate__["b" /* default */], {
+Vue.use(__WEBPACK_IMPORTED_MODULE_6_vee_validate__["c" /* default */], {
   locale: 'zh_CN'
 });
 /**
@@ -45568,8 +45568,6 @@ var UNSET_AUTH_USER = 'UNSET_AUTH_USER';
         console.log("response.data---", response.data);
         __WEBPACK_IMPORTED_MODULE_0__helpers_jwt__["a" /* default */].setToken(response.data.token);
         dispatch('setAuthUser');
-      }).catch(function (error) {
-        console.log("error---", error);
       });
     },
     logoutRequest: function logoutRequest(_ref2) {
@@ -46567,6 +46565,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_jwt__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vee_validate__ = __webpack_require__(83);
 //
 //
 //
@@ -46605,6 +46604,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+
 
 
 
@@ -46612,10 +46614,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      bag: new __WEBPACK_IMPORTED_MODULE_1_vee_validate__["a" /* ErrorBag */]()
     };
   },
 
+  watch: {
+    password: function password() {
+      if (this.bag.has('password:auth')) {
+        this.bag.remove('password');
+      }
+    }
+  },
+  computed: {
+    mismatchError: function mismatchError() {
+      return this.bag.has('password:auth') && !this.errors.has('password');
+    }
+  },
   methods: {
     login: function login() {
       var _this = this;
@@ -46628,10 +46643,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           };
           _this.$store.dispatch('loginRequest', formData).then(function () {
             _this.$router.push({ name: 'profile' });
+          }).catch(function (error) {
+            if (error.response.status === 421) {
+              _this.bag.add('password', '邮箱密码不相符', 'auth');
+            }
+            console.log("error---", error.response);
           });
         }
       });
-    }
+    },
+    removeBagError: function removeBagError() {}
   }
 });
 
@@ -46702,7 +46723,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v(_vm._s(_vm.errors.first('email')))])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group",
     class: {
-      'has-error': _vm.errors.has('password')
+      'has-error': _vm.errors.has('password') || _vm.bag.has('password:auth')
     }
   }, [_c('label', {
     staticClass: "col-md-3 control-label",
@@ -46734,6 +46755,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "value": (_vm.password)
     },
     on: {
+      "change": _vm.removeBagError,
       "input": function($event) {
         if ($event.target.composing) { return; }
         _vm.password = $event.target.value
@@ -46747,7 +46769,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "errors.has('password')"
     }],
     staticClass: "help-block"
-  }, [_vm._v(_vm._s(_vm.errors.first('password')))])])]), _vm._v(" "), _vm._m(0)])
+  }, [_vm._v(_vm._s(_vm.errors.first('password')))]), _vm._v(" "), (_vm.mismatchError) ? _c('span', {
+    staticClass: "help-block"
+  }, [_vm._v(_vm._s(_vm.bag.first('password:auth')))]) : _vm._e()])]), _vm._v(" "), _vm._m(0)])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "form-group"
@@ -47423,8 +47447,8 @@ var isDefinedGlobally = function isDefinedGlobally() {
 /* unused harmony export install */
 /* unused harmony export use */
 /* unused harmony export mapFields */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Validator; });
-/* unused harmony export ErrorBag */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Validator; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ErrorBag; });
 /* unused harmony export Rules */
 /* unused harmony export version */
 /**
@@ -54169,7 +54193,7 @@ var index_esm = {
 };
 
 
-/* harmony default export */ __webpack_exports__["b"] = (index_esm);
+/* harmony default export */ __webpack_exports__["c"] = (index_esm);
 
 
 /***/ }),
