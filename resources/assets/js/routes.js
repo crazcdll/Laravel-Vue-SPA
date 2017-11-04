@@ -47,14 +47,14 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-    if (Store.state.authenticated || jwtToken.getToken()) {
+    if (Store.state.AuthUser.authenticated || jwtToken.getToken()) {
       return next();
     } else {
       return next({'name': 'login'});
     }
   }
   if (to.meta.requireGuest) {
-    if (Store.state.authenticated || jwtToken.getToken()) {
+    if (Store.state.AuthUser.authenticated || jwtToken.getToken()) {
       return next({'name': 'index'});
     } else {
       return next();
